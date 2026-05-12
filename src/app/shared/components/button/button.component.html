@@ -1,0 +1,14 @@
+<button
+  class="btn"
+  [class]="'btn btn--' + variant()"
+  [class.btn--full]="fullWidth()"
+  [class.btn--loading]="loading()"
+  [type]="type()"
+  [disabled]="isDisabled()"
+  (click)="onClick()"
+>
+  @if (loading()) {
+    <span class="btn__spinner"></span>
+  }
+  <span class="btn__label">{{ label() }}</span>
+</button>

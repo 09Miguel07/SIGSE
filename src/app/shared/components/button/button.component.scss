@@ -1,0 +1,71 @@
+@use 'variables' as *;
+
+$variants: (
+  'primary':   ($color-primary,   #ffffff),
+  'secondary': ($color-secondary, #ffffff),
+  'warning':   ($color-warning,   #ffffff),
+  'danger':    ($color-alert,     #ffffff),
+  'neutral':   ($color-neutral,   #ffffff),
+);
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: $text-base;
+  font-weight: $fw-semibold;
+  font-family: $font-primary;
+  cursor: pointer;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+
+  @each $name, $values in $variants {
+    &--#{$name} {
+      background-color: nth($values, 1);
+      color: nth($values, 2);
+
+      &:hover:not(:disabled) {
+        opacity: 0.88;
+        box-shadow: 0 2px 8px rgba(nth($values, 1), 0.35);
+      }
+
+      &:active:not(:disabled) {
+        opacity: 0.75;
+      }
+    }
+  }
+
+  &--full {
+    width: 100%;
+  }
+
+  &--loading {
+    cursor: wait;
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  &__spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  &__label {
+    line-height: 1;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
