@@ -1,0 +1,11 @@
+<div class="layout">
+  <app-sidebar
+    [items]="navItems()"
+    [collapsed]="!sidebarOpen()"
+    (toggle)="toggleSidebar()">
+  </app-sidebar>
+
+  <main class="layout__content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

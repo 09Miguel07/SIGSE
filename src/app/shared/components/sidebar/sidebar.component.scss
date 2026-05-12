@@ -1,0 +1,154 @@
+@use 'variables' as *;
+
+$sidebar-width:           260px;
+$sidebar-collapsed-width: 64px;
+$slide-expand:   1s;
+$slide-collapse: 0.5s;
+$slide-easing:   cubic-bezier(0.4, 0, 0.2, 1);
+
+:host {
+  display: flex;
+}
+
+.sidebar {
+  width: $sidebar-width;
+  min-width: $sidebar-width;
+  background-color: $color-primary;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    width     $slide-expand $slide-easing,
+    min-width $slide-expand $slide-easing;
+
+  &--collapsed {
+    width: $sidebar-collapsed-width;
+    min-width: $sidebar-collapsed-width;
+    transition:
+      width     $slide-collapse $slide-easing,
+      min-width $slide-collapse $slide-easing;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  &__toggle {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  &__toggle-icon {
+    font-size: $text-lg;
+    line-height: 1;
+  }
+
+  &__title {
+    color: white;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform: translateX(0);
+    opacity: 1;
+    transition:
+      opacity   calc($slide-expand * 0.4) ease,
+      transform $slide-expand $slide-easing;
+  }
+
+  &--collapsed &__title {
+    opacity: 0;
+    transform: translateX(-$sidebar-width);
+    transition:
+      opacity   calc($slide-collapse * 0.4) ease,
+      transform $slide-collapse $slide-easing;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    flex: 1;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: $text-base;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    &--active {
+      background-color: rgba(255, 255, 255, 0.18);
+      color: white;
+      font-weight: $fw-medium;
+      border-left: 3px solid white;
+    }
+  }
+
+  &--collapsed &__nav {
+    pointer-events: none;
+  }
+
+  &--collapsed &__item {
+    &--active {
+      background-color: transparent;
+      border-left: none;
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &__icon {
+    font-size: 18px;
+    min-width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform: translateX(0);
+    opacity: 1;
+    transition:
+      opacity   calc($slide-expand * 0.4) ease,
+      transform $slide-expand $slide-easing;
+  }
+
+  &--collapsed &__label {
+    opacity: 0;
+    transform: translateX(-$sidebar-width);
+    transition:
+      opacity   calc($slide-collapse * 0.4) ease,
+      transform $slide-collapse $slide-easing;
+  }
+}
