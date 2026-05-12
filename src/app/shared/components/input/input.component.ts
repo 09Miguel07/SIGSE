@@ -7,21 +7,23 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InputType } from '../../../interfaces/input/input.interface';
 
 @Component({
   selector: 'app-input',
   imports: [FormsModule],
   templateUrl: './input.component.html',
-  styleUrl: './input.component.css',
+  styleUrl: './input.component.scss',
 })
 export class InputComponent implements OnInit {
-  label = input<string>('');
-  placeholder = input<string>('');
-  defaultValue = input<string>('');
-  disabled = input<boolean>(false);
-  readonly = input<boolean>(false);
+  public label = input<string>('');
+  public type = input<InputType>('text');
+  public placeholder = input<string>('');
+  public defaultValue = input<string>('');
+  public disabled = input<boolean>(false);
+  public readonly = input<boolean>(false);
 
-  valueChange = output<string>();
+  public valueChange = output<string>();
 
   protected value = signal<string>('');
 

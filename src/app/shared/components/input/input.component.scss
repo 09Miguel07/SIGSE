@@ -1,0 +1,40 @@
+@use 'variables' as *;
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-label {
+  font-size: $text-sm;
+  font-weight: $fw-medium;
+  color: $color-neutral;
+}
+
+.input-field {
+  padding: 8px 12px;
+  border: 1px solid $color-neutral;
+  border-radius: 6px;
+  font-size: $text-base;
+  color: $white;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.15);
+  }
+
+  &[readonly] {
+    background-color: $white;
+    cursor: default;
+  }
+
+  &.input-disabled {
+    background-color: $white;
+    color: $color-neutral;
+    cursor: not-allowed;
+  }
+}
