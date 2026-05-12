@@ -1,0 +1,76 @@
+@use 'variables' as *;
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $text-base;
+  font-family: $font-primary;
+
+  &__th {
+    padding: 10px 16px;
+    text-align: left;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    color: $white;
+    background-color: $color-primary;
+    white-space: nowrap;
+
+    &--actions {
+      text-align: center;
+    }
+  }
+
+  &__row {
+    border-bottom: 1px solid $color-neutral;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: rgba($color-primary, 0.06);
+    }
+  }
+
+  &__td {
+    padding: 10px 16px;
+    color: #333;
+    vertical-align: middle;
+
+    &--actions {
+      text-align: center;
+      white-space: nowrap;
+
+      app-button + app-button {
+        margin-left: 6px;
+      }
+    }
+  }
+
+  &__empty {
+    padding: 32px 16px;
+    text-align: center;
+    color: $color-neutral;
+    font-size: $text-sm;
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  &__page-info {
+    font-size: $text-sm;
+    font-weight: $fw-medium;
+    color: #555;
+    min-width: 80px;
+    text-align: center;
+  }
+}
