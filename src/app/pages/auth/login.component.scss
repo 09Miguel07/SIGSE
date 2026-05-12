@@ -1,0 +1,46 @@
+@use 'variables' as *;
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $white;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border: 1px solid $color-neutral;
+  border-radius: 12px;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__title {
+    font-size: $text-2xl;
+    font-weight: $fw-bold;
+    color: $color-primary;
+    margin: 0 0 6px;
+    font-family: $font-primary;
+  }
+
+  &__subtitle {
+    font-size: $text-sm;
+    color: $color-neutral;
+    margin: 0;
+    font-family: $font-primary;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}

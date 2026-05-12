@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { LoginComponent } from './pages/auth/login.component';
 import { LayoutComponent } from './shared/components/layout/layout.component';
-
-import { LoadingComponent } from './pages/auth/loading/loading.component';
 
 import { HomeComponent } from './pages/admin/home/home.component';
 import { StudentListComponent } from './pages/admin/students/list/student-list.component';
@@ -22,28 +21,28 @@ import { MyGradesComponent } from './pages/student/my-grades/my-grades.component
 import { MyTrackingComponent } from './pages/student/my-tracking/my-tracking.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // Auth — sin layout
-  { path: 'loading', component: LoadingComponent },
+  { path: 'login', component: LoginComponent },
 
   // Admin — con layout
   {
     path: 'admin',
     component: LayoutComponent,
     children: [
-      { path: '',                component: HomeComponent },
-      { path: 'students',        component: StudentListComponent },
-      { path: 'students/profile/:id', component: StudentProfileComponent },
-      { path: 'tracking',        component: TrackingListComponent },
-      { path: 'tracking/register', component: TrackingRegisterComponent },
-      { path: 'tracking/history',  component: TrackingHistoryComponent },
-      { path: 'tracking/close',    component: TrackingCloseComponent },
-      { path: 'attendance',      component: AttendanceComponent },
-      { path: 'alerts',          component: AlertsComponent },
-      { path: 'reports',         component: ReportsComponent },
-      { path: 'notifications',   component: NotificationsComponent },
-      { path: 'settings/roles',  component: RolesComponent },
+      { path: '',                      component: HomeComponent },
+      { path: 'students',              component: StudentListComponent },
+      { path: 'students/profile/:id',  component: StudentProfileComponent },
+      { path: 'tracking',              component: TrackingListComponent },
+      { path: 'tracking/register',     component: TrackingRegisterComponent },
+      { path: 'tracking/history',      component: TrackingHistoryComponent },
+      { path: 'tracking/close',        component: TrackingCloseComponent },
+      { path: 'attendance',            component: AttendanceComponent },
+      { path: 'alerts',                component: AlertsComponent },
+      { path: 'reports',               component: ReportsComponent },
+      { path: 'notifications',         component: NotificationsComponent },
+      { path: 'settings/roles',        component: RolesComponent },
     ]
   },
 

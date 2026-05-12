@@ -1,0 +1,34 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <div class="login-card__header">
+      <h1 class="login-card__title">SIGSE</h1>
+      <p class="login-card__subtitle">Sistema de Gestión Estudiantil</p>
+    </div>
+
+    <form class="login-card__form" (ngSubmit)="onSubmit()">
+
+      <app-input
+        label="Correo electrónico"
+        placeholder="correo@ejemplo.com"
+        type="text"
+        (valueChange)="email.set($event)"
+      />
+
+      <app-input
+        label="Contraseña"
+        placeholder="••••••••"
+        type="password"
+        (valueChange)="password.set($event)"
+      />
+
+      <app-button
+        label="Iniciar sesión"
+        variant="primary"
+        type="submit"
+        [fullWidth]="true"
+      />
+
+    </form>
+  </div>
+</div>
