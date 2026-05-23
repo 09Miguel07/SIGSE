@@ -1,0 +1,47 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite lanzarlo manualmente desde la UI de GitHub
+
+permissions:
+  contents: write  # necesario para publicar en gh-pages
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate environment.ts
+        env:
+          apiUrl: ${{ secrets.API_URL }}
+          production: 'true'
+        run: node ./scripts/generate-env.js
+
+      - name: Build
+        run: npx ng build --base-href /SIGSE/
+
+      # GitHub Pages no soporta rutas HTML5 por defecto.
+      # Copiar index.html como 404.html hace que cualquier ruta
+      # devuelva la app y Angular se encarga del routing.
+      - name: Fix routing (404.html)
+        run: cp dist/sigse-front/browser/index.html dist/sigse-front/browser/404.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/sigse-front/browser
