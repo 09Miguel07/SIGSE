@@ -45,3 +45,4 @@ Thumbs.db
 # Environments (contienen datos sensibles — usar environment.example.ts como plantilla)
 src/environments/environment.ts
 src/environments/environment.prod.ts
+.claude/
