@@ -4,12 +4,17 @@
 const fs   = require('fs');
 const path = require('path');
 
-const apiUrl     = process.env.apiUrl     || 'http://localhost:8080/api';
+// Elimina comillas simples o dobles que Netlify pueda incluir en el valor
+function stripQuotes(str) {
+  return str.replace(/^['"]|['"]$/g, '').trim();
+}
+
+const apiUrl     = stripQuotes(process.env.apiUrl || 'http://localhost:8080/api');
 const production = process.env.production === 'true';
 
 const content = `export const environment = {
   production: ${production},
-  apiUrl: '${apiUrl}',
+  apiUrl: ${JSON.stringify(apiUrl)},
 };\n`;
 
 const dest = path.join(__dirname, '..', 'src', 'environments', 'environment.ts');
