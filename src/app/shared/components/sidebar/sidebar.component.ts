@@ -12,4 +12,5 @@ export class SidebarComponent {
   items     = input.required<NavItem[]>();
   collapsed = input<boolean>(false);
   toggle    = output<void>();
+  logout    = output<void>();
 }

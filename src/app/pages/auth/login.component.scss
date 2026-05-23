@@ -1,4 +1,5 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 .login-page {
   min-height: 100vh;
@@ -18,6 +19,11 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
+  margin: 0 1rem;
+
+  @include respond-to($bp-sm) {
+    padding: 32px 20px;
+  }
 
   &__header {
     text-align: center;

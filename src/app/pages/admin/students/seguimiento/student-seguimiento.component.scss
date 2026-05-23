@@ -1,0 +1,680 @@
+@use 'mixins' as *;
+@use 'variables' as *;
+
+:host {
+  @include page-content;
+}
+
+.return {
+  font-size: $text-sm;
+  color: $color-primary;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  gap: 1.25rem;
+}
+
+.title {
+  font-size: $text-2xl;
+  font-weight: $fw-bold;
+  font-family: $font-primary;
+  color: #1a1a1a;
+}
+
+.container__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.create-btn {
+  background-color: $color-primary;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: $text-sm;
+  font-weight: $fw-semibold;
+  font-family: $font-primary;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.85; }
+}
+
+.empty {
+  font-size: $text-base;
+  color: $color-neutral;
+  font-family: $font-primary;
+}
+
+// ── Seguimiento card ───────────────────────────────────────
+.seg-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  border: 1px solid transparent;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-color: $color-neutral;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  &__index {
+    font-size: $text-sm;
+    font-weight: $fw-bold;
+    color: $color-neutral;
+    font-family: $font-primary;
+  }
+
+  &__status {
+    font-size: $text-xs;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    padding: 3px 10px;
+    border-radius: 20px;
+
+    &--abierto    { background-color: #dcfce7; color: #166534; }
+    &--cerrado    { background-color: #fee2e2; color: #b91c1c; }
+    &--pendiente  { background-color: #fef9c3; color: #92400e; }
+    &--en\ proceso { background-color: #dbeafe; color: #1e40af; }
+  }
+
+  &__reason {
+    font-size: $text-base;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    color: #1a1a1a;
+  }
+
+  &__admin {
+    font-size: $text-sm;
+    font-family: $font-primary;
+    color: #555;
+  }
+
+  &__hint {
+    font-size: $text-sm;
+    color: $color-primary;
+    font-family: $font-primary;
+    margin-top: 4px;
+    align-self: flex-end;
+  }
+
+  &__menu-wrapper {
+    position: relative;
+    margin-left: auto;
+  }
+
+  &__menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.15s, background-color 0.15s;
+
+    &:hover {
+      color: #333;
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    z-index: 20;
+    min-width: 110px;
+  }
+
+  &__dropdown-option {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.12s;
+
+    &:hover { background-color: #f5f5f5; }
+
+    &--danger {
+      color: $color-alert;
+      &:hover { background-color: #fff2f2; }
+    }
+  }
+}
+
+// ── Modal ──────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 580px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @media (max-width: $bp-sm) {
+    padding: 1.25rem;
+    margin: 0 0.75rem;
+    max-height: 90vh;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__title {
+    font-size: $text-lg;
+    font-weight: $fw-bold;
+    font-family: $font-primary;
+    color: #1a1a1a;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: $text-md;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.15s;
+
+    &:hover { color: $color-alert; }
+  }
+
+  &__description {
+    font-size: $text-base;
+    font-family: $font-primary;
+    color: #444;
+    line-height: 1.5;
+    margin-top: -0.5rem;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__section-title {
+    font-size: $text-base;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    color: $color-primary;
+    border-bottom: 1px solid $color-neutral;
+    padding-bottom: 4px;
+    flex: 1;
+  }
+
+  &__empty {
+    font-size: $text-sm;
+    color: $color-neutral;
+    font-family: $font-primary;
+  }
+}
+
+// ── Create form ────────────────────────────────────────────
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    color: #444;
+  }
+
+  &__select,
+  &__textarea {
+    width: 100%;
+    border: 1px solid $color-neutral;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #1a1a1a;
+
+    &:focus { border-color: $color-primary; }
+    &--error { border-color: $color-alert; }
+  }
+
+  &__select { cursor: pointer; }
+  &__textarea { resize: vertical; }
+
+  &__error {
+    font-size: $text-xs;
+    color: $color-alert;
+    font-family: $font-primary;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  &__cancel {
+    background: none;
+    border: 1px solid $color-neutral;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    cursor: pointer;
+    color: #555;
+    transition: border-color 0.15s, color 0.15s;
+
+    &:hover {
+      border-color: $color-alert;
+      color: $color-alert;
+    }
+  }
+
+  &__save {
+    background-color: $color-primary;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ── Edit form ──────────────────────────────────────────────
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    color: #444;
+  }
+
+  &__textarea,
+  &__select {
+    width: 100%;
+    border: 1px solid $color-neutral;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #1a1a1a;
+
+    &:focus { border-color: $color-primary; }
+
+    &--error { border-color: $color-alert; }
+  }
+
+  &__textarea { resize: vertical; }
+
+  &__select { cursor: pointer; }
+
+  &__error {
+    font-size: $text-xs;
+    color: $color-alert;
+    font-family: $font-primary;
+  }
+
+  &__save {
+    align-self: flex-end;
+    background-color: $color-primary;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ── Add comment button ─────────────────────────────────────
+.add-comment-btn {
+  background: none;
+  border: 1px solid $color-primary;
+  border-radius: 20px;
+  color: $color-primary;
+  font-size: $text-xs;
+  font-weight: $fw-semibold;
+  font-family: $font-primary;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $color-primary;
+    color: #fff;
+  }
+}
+
+// ── Comment form ───────────────────────────────────────────
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__input {
+    width: 100%;
+    border: 1px solid $color-neutral;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+
+    &:focus { border-color: $color-primary; }
+  }
+
+  &__save {
+    align-self: flex-end;
+    background-color: $color-primary;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ── Historial item ─────────────────────────────────────────
+.historial-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 8px 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  font-family: $font-primary;
+
+  &__status {
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    color: #1a1a1a;
+    flex: 1;
+  }
+
+  &__by {
+    font-size: $text-sm;
+    color: #555;
+  }
+
+  &__date {
+    font-size: $text-xs;
+    color: $color-neutral;
+    white-space: nowrap;
+  }
+}
+
+// ── Comment item ───────────────────────────────────────────
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  font-family: $font-primary;
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: $text-sm;
+    color: #555;
+  }
+
+  &__content {
+    font-size: $text-sm;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  &__menu-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  &__menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.15s, background-color 0.15s;
+
+    &:hover {
+      color: #333;
+      background-color: #e5e5e5;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    z-index: 10;
+    min-width: 110px;
+  }
+
+  &__dropdown-option {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.12s;
+
+    &:hover { background-color: #f5f5f5; }
+
+    &--danger {
+      color: $color-alert;
+      &:hover { background-color: #fff2f2; }
+    }
+  }
+}
+
+// ── Comment inline edit ────────────────────────────────────
+.comment-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__input {
+    width: 100%;
+    border: 1px solid $color-neutral;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+
+    &:focus { border-color: $color-primary; }
+    &--error { border-color: $color-alert; }
+  }
+
+  &__error {
+    font-size: $text-xs;
+    color: $color-alert;
+    font-family: $font-primary;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  &__cancel {
+    background: none;
+    border: 1px solid $color-neutral;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: $text-sm;
+    cursor: pointer;
+    color: #555;
+    transition: border-color 0.15s, color 0.15s;
+
+    &:hover {
+      border-color: $color-alert;
+      color: $color-alert;
+    }
+  }
+
+  &__save {
+    background-color: $color-primary;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}

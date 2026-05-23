@@ -1,11 +1,19 @@
-<div class="layout">
+<div class="layout" [class.layout--sidebar-open]="sidebarOpen()">
+
   <app-sidebar
     [items]="navItems()"
     [collapsed]="!sidebarOpen()"
-    (toggle)="toggleSidebar()">
+    (toggle)="toggleSidebar()"
+    (logout)="onLogout()">
   </app-sidebar>
 
+  <!-- Overlay oscuro (solo mobile) -->
+  <div class="layout__overlay" (click)="toggleSidebar()"></div>
+
   <main class="layout__content">
+    <!-- Botón hamburguesa (solo visible en mobile) -->
+    <button class="layout__mobile-menu" (click)="toggleSidebar()" aria-label="Abrir menú">&#9776;</button>
     <router-outlet></router-outlet>
   </main>
+
 </div>

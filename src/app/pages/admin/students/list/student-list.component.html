@@ -1,0 +1,21 @@
+<app-loader  [isLoading]="isLoading()" />
+
+<section class="container">
+  <h2>Todos los Estudiantes</h2>
+
+  <app-table
+    [data]="allStudents()"
+    [columns]="TableColumn"
+    [actions]="tableActions"
+    (actionClicked)="onActionClicked($event)"
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (pageChange)="onpageChange($event)"
+    [showFilter]="true"
+    filterLabel="Buscar estudiante"
+    filterPlaceholder="Buscar por Nombre o correo"
+    (filterChange)="onSearchTermChange($event)"
+    />
+</section>
+
+

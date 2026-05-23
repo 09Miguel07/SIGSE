@@ -1,0 +1,58 @@
+@use 'mixins' as *;
+
+:host {
+  @include page-content;
+}
+
+.greeting {
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.stat-card {
+  width: 300px;
+
+  @media (max-width: 680px) {
+    width: 100%;
+  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+
+  &__label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+
+  &__value {
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1;
+    text-align: right;
+
+    &--neutral { color: #111827; }
+    &--red     { color: #dc2626; }
+    &--green   { color: #16a34a; }
+    &--blue    { color: #2563eb; }
+  }
+}

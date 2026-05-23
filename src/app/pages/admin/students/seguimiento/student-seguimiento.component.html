@@ -1,0 +1,301 @@
+<app-loader [isLoading]="isLoading()" />
+
+<h3 class="return" [routerLink]="['/admin/students/profile', studentId()]">&#8592; Regresar</h3>
+
+<section class="container">
+  <div class="container__header">
+    <h1 class="title">Seguimiento</h1>
+    <button class="create-btn" (click)="openCreateModal()">+ Nuevo seguimiento</button>
+  </div>
+
+  @for (seg of seguimientos(); track seg.id; let i = $index) {
+    <div class="seg-card" role="button" tabindex="0"
+      (click)="openModal(seg)"
+      (keydown.enter)="openModal(seg)"
+      (keydown.space)="openModal(seg)">
+
+      <div class="seg-card__header">
+        <span class="seg-card__index">#{{ i + 1 }}</span>
+        <span class="seg-card__status">{{ seg.status }}</span>
+
+        <div class="seg-card__menu-wrapper">
+          <button class="seg-card__menu-btn" (click)="toggleSeguimientoMenu(seg.id, $event)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"></path>
+            </svg>
+          </button>
+
+          @if (activeMenuSeguimientoId() === seg.id) {
+            <div class="seg-card__dropdown" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+              <button class="seg-card__dropdown-option seg-card__dropdown-option--danger"
+                (click)="deleteMonitoring(seg.id, $event)">
+                Eliminar
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <p class="seg-card__reason">{{ seg.reason }}</p>
+      <p class="seg-card__admin">Responsable: <strong>{{ seg.administrative }}</strong></p>
+      <p class="seg-card__date">Apertura: {{ seg.opening_date | date:'yyyy-MM-dd' }}</p>
+
+      <span class="seg-card__hint">Ver detalle &#8250;</span>
+    </div>
+  }
+
+  @if (seguimientos().length === 0 && !isLoading()) {
+    <p class="empty">No hay seguimientos registrados.</p>
+  }
+</section>
+
+@if (showCreateModal()) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeCreateModal()" (keydown.escape)="closeCreateModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+
+      <div class="modal__header">
+        <h3 class="modal__title">Nuevo seguimiento</h3>
+        <button class="modal__close" (click)="closeCreateModal()">&#10005;</button>
+      </div>
+
+      <div class="create-form">
+
+        <div class="create-form__field">
+          <label class="create-form__label" for="new-reason">Razón</label>
+          <select
+            id="new-reason"
+            class="create-form__select"
+            [class.create-form__select--error]="newReasonError()"
+            [ngModel]="newReasonId()"
+            (ngModelChange)="newReasonId.set(+$event); newReasonError.set('')">
+            <option [value]="0" disabled>Selecciona una razón</option>
+            @for (r of reasons(); track r.id) {
+              <option [value]="r.id">{{ r.reason_name }}</option>
+            }
+          </select>
+          @if (newReasonError()) {
+            <span class="create-form__error">{{ newReasonError() }}</span>
+          }
+        </div>
+
+        <div class="create-form__field">
+          <label class="create-form__label" for="new-desc">Descripción</label>
+          <textarea
+            id="new-desc"
+            class="create-form__textarea"
+            [class.create-form__textarea--error]="newDescError()"
+            rows="3"
+            placeholder="Escribe una descripción..."
+            [ngModel]="newDescription()"
+            (ngModelChange)="newDescription.set($event); newDescError.set('')">
+          </textarea>
+          @if (newDescError()) {
+            <span class="create-form__error">{{ newDescError() }}</span>
+          }
+        </div>
+
+        <div class="create-form__field">
+          <label class="create-form__label" for="new-status">Estado</label>
+          <select
+            id="new-status"
+            class="create-form__select"
+            [class.create-form__select--error]="newStatusError()"
+            [ngModel]="newStatusId()"
+            (ngModelChange)="newStatusId.set(+$event); newStatusError.set('')">
+            <option [value]="0" disabled>Selecciona un estado</option>
+            @for (s of statuses(); track s.status_id) {
+              <option [value]="s.status_id">{{ s.status_name }}</option>
+            }
+          </select>
+          @if (newStatusError()) {
+            <span class="create-form__error">{{ newStatusError() }}</span>
+          }
+        </div>
+
+        <div class="create-form__actions">
+          <button class="create-form__cancel" (click)="closeCreateModal()">Cancelar</button>
+          <button class="create-form__save" [disabled]="isCreating()" (click)="submitCreateMonitoring()">
+            {{ isCreating() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+}
+
+@if (selectedSeguimiento(); as seg) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeModal()" (keydown.escape)="closeModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+
+      <div class="modal__header">
+        <h3 class="modal__title">{{ seg.reason }}</h3>
+
+        <div class="modal__header-actions">
+          <div class="seg-card__menu-wrapper">
+            <button class="seg-card__menu-btn" (click)="toggleSeguimientoMenu(seg.id, $event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"></path>
+              </svg>
+            </button>
+
+            @if (activeMenuSeguimientoId() === seg.id) {
+              <div class="seg-card__dropdown" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                <button class="seg-card__dropdown-option seg-card__dropdown-option--danger"
+                  (click)="deleteMonitoring(seg.id, $event)">
+                  Eliminar
+                </button>
+              </div>
+            }
+          </div>
+
+          <button class="modal__close" (click)="closeModal()">&#10005;</button>
+        </div>
+      </div>
+
+      <!-- Editar seguimiento -->
+      <div class="modal__section">
+        <h4 class="modal__section-title">Editar seguimiento</h4>
+
+        <div class="edit-form">
+          <div class="edit-form__field">
+            <label class="edit-form__label" for="edit-desc">Descripción</label>
+            <textarea
+              id="edit-desc"
+              class="edit-form__textarea"
+              [class.edit-form__textarea--error]="descriptionError()"
+              rows="3"
+              [ngModel]="editDescription()"
+              (ngModelChange)="editDescription.set($event); descriptionError.set('')">
+            </textarea>
+            @if (descriptionError()) {
+              <span class="edit-form__error">{{ descriptionError() }}</span>
+            }
+          </div>
+
+          <div class="edit-form__field">
+            <label class="edit-form__label" for="edit-status">Estado</label>
+            <select
+              id="edit-status"
+              class="edit-form__select"
+              [ngModel]="editStatusId()"
+              (ngModelChange)="editStatusId.set(+$event)">
+              @for (status of statuses(); track status.status_id) {
+                <option [value]="status.status_id">{{ status.status_name }}</option>
+              }
+            </select>
+          </div>
+
+          <button
+            class="edit-form__save"
+            [disabled]="isUpdating()"
+            (click)="updateSeguimiento()">
+            {{ isUpdating() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Historial -->
+      <div class="modal__section">
+        <h4 class="modal__section-title">Historial de cambios</h4>
+        @if (seg.historial.length === 0) {
+          <p class="modal__empty">Sin historial.</p>
+        }
+        @for (h of seg.historial; track h.id) {
+          <div class="historial-item">
+            <span class="historial-item__status">{{ h.current_status }}</span>
+            <span class="historial-item__by">{{ h.changed_by }}</span>
+            <span class="historial-item__date">{{ h.date | date:'yyyy-MM-dd' }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Comentarios -->
+      <div class="modal__section">
+        <div class="modal__section-header">
+          <h4 class="modal__section-title">Comentarios</h4>
+          <button class="add-comment-btn" (click)="toggleCommentForm()">
+            {{ showCommentForm() ? 'Cancelar' : '+ Agregar comentario' }}
+          </button>
+        </div>
+
+        @if (showCommentForm()) {
+          <div class="comment-form">
+            <textarea
+              class="comment-form__input"
+              placeholder="Escribe tu comentario..."
+              [ngModel]="commentContent()"
+              (ngModelChange)="commentContent.set($event)"
+              rows="3">
+            </textarea>
+            <button
+              class="comment-form__save"
+              [disabled]="isSaving()"
+              (click)="saveComment()">
+              {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        }
+
+        @if (seg.comentarios.length === 0) {
+          <p class="modal__empty">Sin comentarios.</p>
+        }
+        @for (c of seg.comentarios; track c.id) {
+          <div class="comment-item">
+            <div class="comment-item__body">
+              <div class="comment-item__meta">
+                <strong>{{ c.comment_by }}</strong>
+                <span>{{ c.date | date:'yyyy-MM-dd' }}</span>
+              </div>
+
+              @if (editingCommentId() === c.id) {
+                <div class="comment-edit">
+                  <textarea
+                    class="comment-edit__input"
+                    [class.comment-edit__input--error]="editCommentError()"
+                    rows="2"
+                    [ngModel]="editCommentContent()"
+                    (ngModelChange)="editCommentContent.set($event); editCommentError.set('')">
+                  </textarea>
+                  @if (editCommentError()) {
+                    <span class="comment-edit__error">{{ editCommentError() }}</span>
+                  }
+                  <div class="comment-edit__actions">
+                    <button class="comment-edit__cancel" (click)="cancelEditComment()">&#10005;</button>
+                    <button class="comment-edit__save" [disabled]="isSaving()" (click)="saveEditComment(c.id)">
+                      {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <p class="comment-item__content">{{ c.content }}</p>
+              }
+            </div>
+
+            <div class="comment-item__menu-wrapper">
+              <button
+                class="comment-item__menu-btn"
+                (click)="toggleCommentMenu(c.id, $event)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM128,72a12,12,0,1,0-12-12A12,12,0,0,0,128,72Zm0,112a12,12,0,1,0,12,12A12,12,0,0,0,128,184Z"></path>
+                </svg>
+              </button>
+
+              @if (activeMenuCommentId() === c.id) {
+                <div class="comment-item__dropdown" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                  <button class="comment-item__dropdown-option" (click)="startEditComment(c.id, c.content, $event)">
+                    Editar
+                  </button>
+                  <button class="comment-item__dropdown-option comment-item__dropdown-option--danger" (click)="deleteComment(c.id, $event)">
+                    Eliminar
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}

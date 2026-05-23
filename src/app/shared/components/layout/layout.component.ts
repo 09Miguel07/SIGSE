@@ -1,8 +1,9 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, HostListener, signal, computed, inject } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AuthStore } from '../../../store/auth.store';
 
 export interface NavItem {
   label: string;
@@ -11,37 +12,48 @@ export interface NavItem {
 }
 
 const ADMIN_NAV: NavItem[] = [
-  { label: 'Home',               route: '/admin',                   exact: true },
-  { label: 'Gestión de Estudiantes',  route: '/admin/students',         },
-  { label: 'Seguimiento Estudiantil', route: '/admin/tracking',         },
-  { label: 'Registro de Asistencia',  route: '/admin/attendance',       },
-  { label: 'Alertas Académicas',      route: '/admin/alerts',           },
-  { label: 'Reportes',                route: '/admin/reports',          },
-  { label: 'Notificaciones',          route: '/admin/notifications',    },
-  { label: 'Configuración',           route: '/admin/settings/roles',   },
+  { label: 'Home',                  route: '/admin',          exact: true },
+  { label: 'Todos los estudiantes', route: '/admin/students'              },
+  { label: 'Usuarios',              route: '/admin/users'                 },
+  { label: 'Roles',                 route: '/admin/roles'                 },
+  { label: 'Reportes',              route: '/admin/reports'               },
 ];
 
 const STUDENT_NAV: NavItem[] = [
-  { label: 'Mi Perfil',       route: '/student/my-profile',    exact: true },
-  { label: 'Mis Notas',       route: '/student/my-grades',     },
-  { label: 'Mi Seguimiento',  route: '/student/my-tracking',   },
+  { label: 'Mi Perfil',      route: '/student/my-profile', exact: true },
+  { label: 'Mis Notas',      route: '/student/my-grades'               },
+  { label: 'Mi Seguimiento', route: '/student/my-tracking'             },
 ];
+
+const MOBILE_BP = 768;
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
-  imports: [RouterOutlet, SidebarComponent]
+  imports: [RouterOutlet, SidebarComponent],
 })
 export class LayoutComponent {
-  private router = inject(Router);
+  private router    = inject(Router);
+  private authStore = inject(AuthStore);
 
-  sidebarOpen = signal(true);
+  sidebarOpen = signal(window.innerWidth > MOBILE_BP);
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth <= MOBILE_BP) {
+      this.sidebarOpen.set(false);
+    }
+  }
 
   private currentUrl = toSignal(
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
-      map(e => (e as NavigationEnd).url)
+      map(e => {
+        // cierra el sidebar en mobile al navegar
+        if (window.innerWidth <= MOBILE_BP) this.sidebarOpen.set(false);
+        return (e as NavigationEnd).url;
+      })
     ),
     { initialValue: this.router.url }
   );
@@ -53,7 +65,12 @@ export class LayoutComponent {
     return [];
   });
 
-  toggleSidebar() {
+  toggleSidebar(): void {
     this.sidebarOpen.update(v => !v);
+  }
+
+  onLogout(): void {
+    this.authStore.clearUser();
+    this.router.navigate(['/login']);
   }
 }

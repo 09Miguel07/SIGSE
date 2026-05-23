@@ -1,0 +1,29 @@
+<app-loader [isLoading]="isLoading()" />
+
+<h1 class="greeting">{{ getGreeting() }}, {{ currentUser()?.names }}</h1>
+
+@if (stats(); as s) {
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <span class="stat-card__label">Estudiantes sin seguimiento</span>
+      <span class="stat-card__value stat-card__value--neutral">{{ s.students_without_monitoring }}</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-card__label">Estudiantes con seguimiento</span>
+      <span class="stat-card__value stat-card__value--red">{{ s.students_with_monitoring }}</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-card__label">Estudiantes con seguimiento activo</span>
+      <span class="stat-card__value stat-card__value--green">{{ s.students_with_active_monitoring }}</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-card__label">Estudiantes con seguimiento cerrado</span>
+      <span class="stat-card__value stat-card__value--blue">{{ s.students_with_closed_monitoring }}</span>
+    </div>
+
+  </div>
+}

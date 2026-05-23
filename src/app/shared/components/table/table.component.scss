@@ -1,15 +1,61 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 .table-wrapper {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 16px;
   width: 100%;
+}
+
+.table-scroll {
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch; // scroll suave en iOS
+}
+
+.table-filter {
+  width: 100%;
+
+  &__input-row {
+    display: flex;
+    align-items: flex-end;   // X queda al nivel del input field, no del label
+    gap: 8px;
+    max-width: 400px;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__clear {
+    flex-shrink: 0;
+    height: 37px;            // misma altura que .input-field (padding 8+8 + font 13px + border)
+    width: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid $color-neutral;
+    border-radius: 6px;
+    color: $color-neutral;
+    font-size: $text-base;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+
+    &:hover {
+      border-color: $color-alert;
+      color: $color-alert;
+      background-color: rgba($color-alert, 0.06);
+    }
+  }
 }
 
 .table {
   width: 100%;
+  min-width: 600px; // fuerza scroll horizontal en mobile en vez de achicar columnas
   border-collapse: collapse;
   font-size: $text-base;
   font-family: $font-primary;
@@ -64,6 +110,11 @@
     align-items: center;
     justify-content: flex-end;
     gap: 12px;
+
+    @include respond-to($bp-sm) {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
   }
 
   &__page-info {

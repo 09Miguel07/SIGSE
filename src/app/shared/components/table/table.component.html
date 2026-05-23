@@ -1,61 +1,87 @@
 <div class="table-wrapper">
-  <table class="table">
-    <thead>
-      <tr>
-        @for (col of columns(); track col.key) {
-          <th
-            class="table__th"
-            [style.width]="col.width"
-            [style.min-width]="col.minWidth"
-          >
-            {{ col.label }}
-          </th>
+
+  @if (showFilter()) {
+    <div class="table-filter">
+      <div class="table-filter__input-row">
+        @if (filterVisible()) {
+          <app-input
+            class="table-filter__input"
+            [label]="filterLabel()"
+            [placeholder]="filterPlaceholder()"
+            (valueChange)="onFilterInput($event)"
+          />
         }
-        @if (hasActions()) {
-          <th class="table__th table__th--actions">Acciones</th>
+        @if (filterValue()) {
+          <button
+            class="table-filter__clear"
+            type="button"
+            title="Limpiar filtro"
+            (click)="onFilterReset()"
+          >✕</button>
         }
-      </tr>
-    </thead>
-    <tbody>
-      @for (row of data(); track $index) {
-        <tr class="table__row">
+      </div>
+    </div>
+  }
+
+  <div class="table-scroll">
+    <table class="table">
+      <thead>
+        <tr>
           @for (col of columns(); track col.key) {
-            <td class="table__td">{{ row[col.key] }}</td>
+            <th
+              class="table__th"
+              [style.width]="col.width"
+              [style.min-width]="col.minWidth"
+            >
+              {{ col.label }}
+            </th>
           }
           @if (hasActions()) {
-            <td class="table__td table__td--actions">
-              @for (action of actions(); track action.action) {
-                <app-button
-                  [label]="getLabel(action, row)"
-                  [variant]="action.type"
-                  (clicked)="onAction(action.action, row)"
-                />
-              }
-            </td>
+            <th class="table__th table__th--actions">Acciones</th>
           }
         </tr>
-      }
-      @if (!data().length) {
-        <tr>
-          <td class="table__empty" [colSpan]="columns().length + (hasActions() ? 1 : 0)">
-            Sin datos
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @for (row of data(); track $index) {
+          <tr class="table__row">
+            @for (col of columns(); track col.key) {
+              <td class="table__td">{{ row[col.key] }}</td>
+            }
+            @if (hasActions()) {
+              <td class="table__td table__td--actions">
+                @for (action of actions(); track action.action) {
+                  <app-button
+                    [label]="getLabel(action, row)"
+                    [variant]="action.type"
+                    (clicked)="onAction(action.action, row)"
+                  />
+                }
+              </td>
+            }
+          </tr>
+        }
+        @if (!data().length) {
+          <tr>
+            <td class="table__empty" [colSpan]="columns().length + (hasActions() ? 1 : 0)">
+              Sin datos
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
   <div class="table__pagination">
     <app-button
       label="← Anterior"
-      variant="neutral"
+      variant="primary"
       [disabled]="prevDisabled()"
       (clicked)="onPage('prev')"
     />
     <span class="table__page-info">{{ currentPage() }} de {{ totalPages() }}</span>
     <app-button
       label="Siguiente →"
-      variant="neutral"
+      variant="primary"
       [disabled]="nextDisabled()"
       (clicked)="onPage('next')"
     />

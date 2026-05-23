@@ -1,0 +1,186 @@
+<app-loader [isLoading]="isLoading()" />
+
+<div class="container">
+  <div class="container__header">
+    <h1 class="title">Usuarios</h1>
+    <button class="create-btn" (click)="openCreateModal()">+ Nuevo usuario</button>
+  </div>
+
+  <app-table
+    [columns]="tableColumns"
+    [data]="tableData()"
+    [actions]="tableActions"
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [showFilter]="true"
+    filterLabel="Buscar por correo"
+    filterPlaceholder="correo@ejemplo.com"
+    (filterChange)="onFilterChange($event)"
+    (pageChange)="onPageChange($event)"
+    (actionClicked)="onAction($event)"
+  />
+</div>
+
+<!-- ── Modal: Crear usuario ─────────────────────────────────────── -->
+@if (showCreateModal()) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeCreateModal()" (keydown.escape)="closeCreateModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3 class="modal__title">Nuevo usuario</h3>
+        <button class="modal__close" (click)="closeCreateModal()">&#10005;</button>
+      </div>
+
+      <div class="form">
+        <div class="form__row">
+          <div class="form__field">
+            <label class="form__label" for="c-names">Nombres</label>
+            <input id="c-names" class="form__input" [class.form__input--error]="createNamesErr()"
+              type="text" placeholder="Nombres"
+              [ngModel]="createNames()" (ngModelChange)="createNames.set($event); createNamesErr.set('')">
+            @if (createNamesErr()) { <span class="form__error">{{ createNamesErr() }}</span> }
+          </div>
+          <div class="form__field">
+            <label class="form__label" for="c-last">Apellidos</label>
+            <input id="c-last" class="form__input" [class.form__input--error]="createLastErr()"
+              type="text" placeholder="Apellidos"
+              [ngModel]="createLastNames()" (ngModelChange)="createLastNames.set($event); createLastErr.set('')">
+            @if (createLastErr()) { <span class="form__error">{{ createLastErr() }}</span> }
+          </div>
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="c-email">Correo electrónico</label>
+          <input id="c-email" class="form__input" [class.form__input--error]="createEmailErr()"
+            type="email" placeholder="correo@ejemplo.com"
+            [ngModel]="createEmail()" (ngModelChange)="createEmail.set($event); createEmailErr.set('')">
+          @if (createEmailErr()) { <span class="form__error">{{ createEmailErr() }}</span> }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="c-pwd">Contraseña</label>
+          <input id="c-pwd" class="form__input" [class.form__input--error]="createPassErr()"
+            type="password" placeholder="Contraseña"
+            [ngModel]="createPassword()" (ngModelChange)="createPassword.set($event); createPassErr.set('')">
+          @if (createPassErr()) { <span class="form__error">{{ createPassErr() }}</span> }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="c-active">Estado</label>
+          <select id="c-active" class="form__select"
+            [ngModel]="createActive()" (ngModelChange)="createActive.set($event === 'true')">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="form__actions">
+          <button class="form__cancel" (click)="closeCreateModal()">Cancelar</button>
+          <button class="form__save" [disabled]="isSaving()" (click)="submitCreate()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── Modal: Editar usuario ────────────────────────────────────── -->
+@if (editUser(); as user) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeEditModal()" (keydown.escape)="closeEditModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3 class="modal__title">Editar usuario</h3>
+        <button class="modal__close" (click)="closeEditModal()">&#10005;</button>
+      </div>
+
+      <div class="form">
+        <div class="form__row">
+          <div class="form__field">
+            <label class="form__label" for="e-names">Nombres</label>
+            <input id="e-names" class="form__input" [class.form__input--error]="editNamesErr()"
+              type="text" placeholder="Nombres"
+              [ngModel]="editNames()" (ngModelChange)="editNames.set($event); editNamesErr.set('')">
+            @if (editNamesErr()) { <span class="form__error">{{ editNamesErr() }}</span> }
+          </div>
+          <div class="form__field">
+            <label class="form__label" for="e-last">Apellidos</label>
+            <input id="e-last" class="form__input" [class.form__input--error]="editLastErr()"
+              type="text" placeholder="Apellidos"
+              [ngModel]="editLastNames()" (ngModelChange)="editLastNames.set($event); editLastErr.set('')">
+            @if (editLastErr()) { <span class="form__error">{{ editLastErr() }}</span> }
+          </div>
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="e-email">Correo electrónico</label>
+          <input id="e-email" class="form__input" [class.form__input--error]="editEmailErr()"
+            type="email" placeholder="correo@ejemplo.com"
+            [ngModel]="editEmail()" (ngModelChange)="editEmail.set($event); editEmailErr.set('')">
+          @if (editEmailErr()) { <span class="form__error">{{ editEmailErr() }}</span> }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="e-active">Estado</label>
+          <select id="e-active" class="form__select"
+            [ngModel]="editActive()" (ngModelChange)="editActive.set($event === 'true')">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="form__actions">
+          <button class="form__cancel" (click)="closeEditModal()">Cancelar</button>
+          <button class="form__save" [disabled]="isSaving()" (click)="submitEdit()">
+            {{ isSaving() ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── Modal: Cambiar contraseña ────────────────────────────────── -->
+@if (pwdUser(); as user) {
+  <div class="modal-overlay" tabindex="-1" (click)="closePwdModal()" (keydown.escape)="closePwdModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3 class="modal__title">Cambiar contraseña</h3>
+        <button class="modal__close" (click)="closePwdModal()">&#10005;</button>
+      </div>
+      <p class="modal__subtitle">{{ user.names }} {{ user.lastNames }}</p>
+
+      <div class="form">
+        <div class="form__field">
+          <label class="form__label" for="p-current">Contraseña actual</label>
+          <input id="p-current" class="form__input" [class.form__input--error]="currentPwdErr()"
+            type="password" placeholder="Contraseña actual"
+            [ngModel]="currentPwd()" (ngModelChange)="currentPwd.set($event); currentPwdErr.set('')">
+          @if (currentPwdErr()) { <span class="form__error">{{ currentPwdErr() }}</span> }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="p-new">Nueva contraseña</label>
+          <input id="p-new" class="form__input" [class.form__input--error]="newPwdErr()"
+            type="password" placeholder="Nueva contraseña"
+            [ngModel]="newPwd()" (ngModelChange)="newPwd.set($event); newPwdErr.set('')">
+          @if (newPwdErr()) { <span class="form__error">{{ newPwdErr() }}</span> }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="p-confirm">Confirmar contraseña</label>
+          <input id="p-confirm" class="form__input" [class.form__input--error]="confirmPwdErr()"
+            type="password" placeholder="Repite la nueva contraseña"
+            [ngModel]="confirmPwd()" (ngModelChange)="confirmPwd.set($event); confirmPwdErr.set('')">
+          @if (confirmPwdErr()) { <span class="form__error">{{ confirmPwdErr() }}</span> }
+        </div>
+
+        <div class="form__actions">
+          <button class="form__cancel" (click)="closePwdModal()">Cancelar</button>
+          <button class="form__save" [disabled]="isSaving()" (click)="submitChangePassword()">
+            {{ isSaving() ? 'Guardando...' : 'Cambiar contraseña' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

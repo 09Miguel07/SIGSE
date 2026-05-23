@@ -1,0 +1,27 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #2D7D17;
+  --color-secondary: #FFC107;
+  --color-neutral: #CCCCCC;
+  --color-warning: #FF9400;
+  --color-alert: #EE5252;
+  --white: #F3F3F3;
+
+
+  --font-primary: 'Inter', sans-serif;
+
+  --text-xs:   10px;   /* badges, etiquetas pequeñas */
+  --text-sm:   12px;   /* notas al pie, textos secundarios */
+  --text-base: 13px;   /* cuerpo general */
+  --text-md:   15px;   /* botones */
+  --text-lg:   18px;   /* títulos de card */
+  --text-xl:   20px;   /* títulos de página */
+  --text-2xl:  36px;   /* valores en tarjetas de estadísticas */
+
+  --fw-regular:   400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+}

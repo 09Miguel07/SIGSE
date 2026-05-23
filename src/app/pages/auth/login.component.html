@@ -1,3 +1,6 @@
+<app-loader  [isLoading]="isLoading()" />
+
+
 <div class="login-page">
   <div class="login-card">
 
@@ -6,7 +9,7 @@
       <p class="login-card__subtitle">Sistema de Gestión Estudiantil</p>
     </div>
 
-    <form class="login-card__form" (ngSubmit)="onSubmit()">
+    <form class="login-card__form" (submit)="onSubmit($event)">
 
       <app-input
         label="Correo electrónico"

@@ -1,0 +1,16 @@
+@if (toastService.toast(); as toast) {
+  <div class="toast" [ngClass]="toast.type">
+    <div class="toast__icon">
+      @switch (toast.type) {
+        @case ('error') { <span>&#10007;</span> }
+        @case ('success') { <span>&#10003;</span> }
+        @case ('warning') { <span>&#9888;</span> }
+      }
+    </div>
+    <div class="toast__content">
+      <p class="toast__title">{{ toast.title }}</p>
+      <p class="toast__subtitle">{{ toast.subtitle }}</p>
+    </div>
+    <button class="toast__close" (click)="toastService.dismiss()">&#10005;</button>
+  </div>
+}

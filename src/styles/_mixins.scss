@@ -1,0 +1,18 @@
+@use 'variables' as *;
+
+@mixin respond-to($bp) {
+  @media (max-width: $bp) {
+    @content;
+  }
+}
+
+@mixin page-content {
+  display: block;
+  padding-top: 60px;
+  margin-left: 20px;
+
+  @include respond-to($bp-md) {
+    padding-top: 72px; // espacio para el botón hamburguesa fijo
+    margin-left: 0;
+  }
+}

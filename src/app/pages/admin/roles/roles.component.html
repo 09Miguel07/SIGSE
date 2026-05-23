@@ -1,0 +1,88 @@
+<app-loader [isLoading]="isLoading()" />
+
+<div class="container">
+  <div class="container__header">
+    <h1 class="title">Roles</h1>
+    <button class="create-btn" (click)="openCreateModal()">+ Nuevo rol</button>
+  </div>
+
+  @if (roles().length === 0 && !isLoading()) {
+    <p class="empty">No hay roles registrados.</p>
+  }
+
+  @for (role of roles(); track role.id) {
+    <div class="role-card">
+      <span class="role-card__name">{{ role.role }}</span>
+      <div class="role-card__right">
+        <span class="role-card__badge"
+          [class.role-card__badge--active]="role.is_active"
+          [class.role-card__badge--inactive]="!role.is_active">
+          {{ role.is_active ? 'Activo' : 'Inactivo' }}
+        </span>
+        <button class="role-card__btn" (click)="openEditModal(role)">Editar</button>
+        <button class="role-card__btn role-card__btn--danger" (click)="openDeleteModal(role)">Eliminar</button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- ── Modal: Confirmar eliminación ─────────────────────────────── -->
+@if (roleToDelete(); as role) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeDeleteModal()" (keydown.escape)="closeDeleteModal()">
+    <div class="modal modal--confirm" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="confirm">
+        <div class="confirm__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 256 256">
+            <path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/>
+          </svg>
+        </div>
+        <h3 class="confirm__title">Eliminar rol</h3>
+        <p class="confirm__message">¿Estás seguro de que deseas eliminar el rol <strong>{{ role.role }}</strong>? Esta acción no se puede deshacer.</p>
+        <div class="confirm__actions">
+          <button class="form__cancel" (click)="closeDeleteModal()">Cancelar</button>
+          <button class="form__save form__save--danger" [disabled]="isSaving()" (click)="confirmDelete()">
+            {{ isSaving() ? 'Eliminando...' : 'Eliminar' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ── Modal: Crear / Editar rol ────────────────────────────────── -->
+@if (showModal()) {
+  <div class="modal-overlay" tabindex="-1" (click)="closeModal()" (keydown.escape)="closeModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3 class="modal__title">{{ modalTitle }}</h3>
+        <button class="modal__close" (click)="closeModal()">&#10005;</button>
+      </div>
+
+      <div class="form">
+        <div class="form__field">
+          <label class="form__label" for="r-name">Nombre del rol</label>
+          <input id="r-name" class="form__input" [class.form__input--error]="roleNameErr()"
+            type="text" placeholder="Ej. Coordinador"
+            [ngModel]="roleName()" (ngModelChange)="roleName.set($event); roleNameErr.set('')">
+          @if (roleNameErr()) { <span class="form__error">{{ roleNameErr() }}</span> }
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="r-active">Estado</label>
+          <select id="r-active" class="form__select"
+            [ngModel]="roleActive()" (ngModelChange)="roleActive.set($event === 'true')">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="form__actions">
+          <button class="form__cancel" (click)="closeModal()">Cancelar</button>
+          <button class="form__save" [disabled]="isSaving()" (click)="submitModal()">
+            {{ isSaving() ? 'Guardando...' : (editingRole() ? 'Guardar cambios' : 'Guardar') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

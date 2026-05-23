@@ -1,11 +1,69 @@
+@use 'variables' as *;
+
 .layout {
   display: flex;
   height: 100vh;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: clip; // clip (no scroll) pero no crea un nuevo contexto de formato que rompa position:fixed
 
+  // ── Overlay (solo visible en mobile cuando el sidebar está abierto) ───────
+  &__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 199; // justo debajo del sidebar (200)
+  }
+
+  &--sidebar-open &__overlay {
+    @media (max-width: $bp-md) {
+      display: block;
+    }
+  }
+
+  // ── Botón hamburguesa (solo mobile) ───────────────────────────────────────
+  &__mobile-menu {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 100;
+    background-color: $color-primary;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.15s;
+
+    &:hover { opacity: 0.85; }
+
+    @media (max-width: $bp-md) {
+      display: flex;
+    }
+  }
+
+  // ── Área de contenido ─────────────────────────────────────────────────────
   &__content {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden; // el scroll horizontal lo maneja cada componente internamente
     background-color: #f5f5f5;
+    padding: 0 2rem 2rem;
+    min-width: 0; // evita overflow en flex
+
+    @media (max-width: $bp-md) {
+      padding: 0 1rem 2rem;
+      width: 100%;
+    }
+
+    @media (max-width: $bp-sm) {
+      padding: 0 0.75rem 2rem;
+    }
   }
 }

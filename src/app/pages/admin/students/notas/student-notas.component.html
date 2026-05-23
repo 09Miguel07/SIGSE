@@ -1,0 +1,77 @@
+<app-loader [isLoading]="isLoading()" />
+
+<h3 class="return" [routerLink]="['/admin/students/profile', studentId()]">&#8592; Regresar</h3>
+
+<section class="container">
+  <h1 class="title">Notas</h1>
+
+  @for (calification of califications(); track calification.year; let yi = $index) {
+    <div class="year-card">
+      <h2 class="year-card__title">{{ calification.year }}</h2>
+
+      <div class="year-card__periods">
+        @for (period of calification.periods; track period.period_name) {
+          <button
+            class="period-btn"
+            [class.period-btn--active]="isPeriodActive(yi, period)"
+            (click)="selectPeriod(yi, period)"
+          >
+            {{ period.period_name }}
+          </button>
+        }
+      </div>
+
+      @if (selectedPeriod()?.yearIndex === yi) {
+        <div class="subjects-grid">
+          @for (subject of selectedPeriod()!.period.subjects; track subject.subject_id) {
+            <div class="subject-card" role="button" tabindex="0"
+              (click)="openSubjectModal(subject)"
+              (keydown.enter)="openSubjectModal(subject)"
+              (keydown.space)="openSubjectModal(subject)">
+              <span class="subject-card__name">{{ subject.subject_name }}</span>
+              <span class="subject-card__teacher">{{ subject.teacher }}</span>
+              <span class="subject-card__avg">Promedio: <strong>{{ subject.promedio }}</strong></span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (califications().length === 0 && !isLoading()) {
+    <p class="empty">No hay calificaciones registradas.</p>
+  }
+</section>
+
+@if (selectedSubject(); as subject) {
+  <div class="modal-overlay" role="dialog" tabindex="-1" (click)="closeModal()" (keydown.escape)="closeModal()">
+    <div class="modal" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3 class="modal__title">{{ subject.subject_name }}</h3>
+        <button class="modal__close" (click)="closeModal()">&#10005;</button>
+      </div>
+      <p class="modal__teacher">Docente: {{ subject.teacher }}</p>
+
+      <table class="notes-table">
+        <thead>
+          <tr>
+            <th>Actividad</th>
+            <th>Porcentaje</th>
+            <th>Nota</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (nota of subject.notas; track nota.activity_name) {
+            <tr>
+              <td>{{ nota.activity_name }}</td>
+              <td>{{ nota.percentage }}%</td>
+              <td>{{ nota.value }}</td>
+              <td>{{ nota.date | date:'yyyy-MM-dd' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

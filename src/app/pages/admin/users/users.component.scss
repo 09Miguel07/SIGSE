@@ -1,0 +1,183 @@
+@use 'mixins' as *;
+@use 'variables' as *;
+
+:host { @include page-content; }
+
+// ── Cabecera ───────────────────────────────────────────────────────────────
+.title { font-size: $text-2xl; font-weight: $fw-bold; color: #111827; }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  gap: 1rem;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+.create-btn {
+  background-color: $color-primary;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: $text-sm;
+  font-weight: $fw-semibold;
+  font-family: $font-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+  &:hover { opacity: 0.85; }
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @include respond-to($bp-sm) { padding: 1.25rem; }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__title {
+    font-size: $text-lg;
+    font-weight: $fw-bold;
+    color: #1a1a1a;
+    font-family: $font-primary;
+  }
+
+  &__subtitle {
+    font-size: $text-sm;
+    color: #6b7280;
+    font-family: $font-primary;
+    margin-top: -0.75rem;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: $text-md;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.15s;
+    &:hover { color: $color-alert; }
+  }
+}
+
+// ── Form ───────────────────────────────────────────────────────────────────
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @include respond-to($bp-sm) { grid-template-columns: 1fr; }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__label {
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    color: #444;
+    font-family: $font-primary;
+  }
+
+  &__input,
+  &__select {
+    width: 100%;
+    border: 1px solid $color-neutral;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+    background: #fff;
+    color: #1a1a1a;
+
+    &:focus { border-color: $color-primary; }
+    &--error { border-color: $color-alert; }
+  }
+
+  &__select { cursor: pointer; }
+
+  &__error {
+    font-size: $text-xs;
+    color: $color-alert;
+    font-family: $font-primary;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  &__cancel {
+    background: none;
+    border: 1px solid $color-neutral;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: $text-sm;
+    font-family: $font-primary;
+    cursor: pointer;
+    color: #555;
+    transition: border-color 0.15s, color 0.15s;
+    &:hover { border-color: $color-alert; color: $color-alert; }
+  }
+
+  &__save {
+    background: $color-primary;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: $text-sm;
+    font-weight: $fw-semibold;
+    font-family: $font-primary;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+}
